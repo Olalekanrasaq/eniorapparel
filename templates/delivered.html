@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Enior Apparel</title>
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="icon"></div>
+            <h1>Enior Apparel</h1>
+            <ul>
+                <li><a href="{{ url_for('index') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('create_order') }}"><i class="fas fa-box"></i> Manage Orders</a></li>
+                <li><a href="{{ url_for('delivered_order') }}"><i class="fas fa-box"></i> Delivered Orders</a></li>
+                <li><a href="{{ url_for('ready_order') }}"><i class="fas fa-box"></i> Ready-made</a></li>
+                <li><a href="{{ url_for('items') }}"><i class="fas fa-warehouse"></i> Items & Inventory</a></li>
+                <li><a href="{{ url_for('view_customer') }}"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="{{ url_for('view_expenses') }}"><i class="fas fa-receipt"></i> Expenses</a></li>
+                <li><a href="{{ url_for('reports') }}"><i class="fas fa-chart-line"></i> Reports</a></li>
+
+            </ul>
+        </nav>
+        <div class="main-content">
+            <div class="order-header">
+                <h2></h2>
+                <form method="post" action="{{ url_for('delivered_order') }}">
+                    <input type="text" name="search_query" placeholder="Enter search term" class="search-input" id="searchInput">
+                    <input type="date" name="start_date" placeholder="Start date" class="date-input" id="startDate">
+                    <input type="date" name="end_date" placeholder="End date" class="date-input" id="endDate">
+                    <select name="search_type" class="search-select", id="searchType">
+                        <option value="order_id">Search By Order ID</option>
+                        <option value="customer_name">Search By Customer Name</option>
+                        <option value="item">Search By Item</option>
+                        <option value="date">Search By Date</option>
+                    </select>
+                    <button type="submit" class="search-button">SEARCH</button>
+                </form>
+            </div>
+            <div class="order-list">
+                <h3>Delivered Orders</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Customer Name</th>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Price Charged</th>
+                            <th>Order Date</th>
+                            <th>Delivery Date</th>
+                            <th>Amount Paid</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if del_orders %}
+                            {% for order in del_orders %}
+                                <tr>
+                                    <td>{{ order.id }}
+                                    <td>{{ order.customer_name }}</td>
+                                    <td>{{ order.item_name }}</td>
+                                    <td>{{ order.quantity }}</td>
+                                    <td>{{ order.price_charged }}</td>
+                                    <td>{{ order.created_at }}</td>
+                                    <td>{{ order.expected_at }}</td>
+                                    <td>{{ order.amount_paid }}</td>
+                                    <td>{{ order.to_balance }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="9">No order found</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('searchType').addEventListener('change', function() {
+            var searchInput = document.getElementById('searchInput');
+            var startDate = document.getElementById('startDate');
+            var endDate = document.getElementById('endDate');
+
+            if (this.value === 'date') {
+                searchInput.style.display = 'none';
+                startDate.style.display = 'inline';
+                endDate.style.display = 'inline';
+            } else {
+                searchInput.style.display = 'inline';
+                startDate.style.display = 'none';
+                endDate.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

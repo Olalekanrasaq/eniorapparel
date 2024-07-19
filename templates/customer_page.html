@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Enior Apparel</title>
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="icon"></div>
+            <h1>Enior Apparel</h1>
+            <ul>
+                <li><a href="{{ url_for('index') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('create_order') }}"><i class="fas fa-box"></i> Manage Orders</a></li>
+                <li><a href="{{ url_for('delivered_order') }}"><i class="fas fa-box"></i> Delivered Orders</a></li>
+                <li><a href="{{ url_for('ready_order') }}"><i class="fas fa-box"></i> Ready-made</a></li>
+                <li><a href="{{ url_for('items') }}"><i class="fas fa-warehouse"></i> Items & Inventory</a></li>
+                <li><a href="{{ url_for('view_customer') }}"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="{{ url_for('view_expenses') }}"><i class="fas fa-receipt"></i> Expenses</a></li>
+                <li><a href="{{ url_for('reports') }}"><i class="fas fa-chart-line"></i> Reports</a></li>
+
+            </ul>
+        </nav>
+        <div class="main-content">
+            <div class="order-header">
+                <h2></h2>
+                <form method="post" action="{{ url_for('view_customer') }}">
+                    <a href="{{ url_for('create_customer') }}" class="create-new-customer">CREATE NEW CUSTOMER</a>
+                    <input type="text" name="search_query" placeholder="Enter customer name or phone number to search for" class="search-input">
+                    <select name="search_type" class="search-select">
+                        <option value="name">Search By Name</option>
+                        <option value="phone">Search By Phone</option>
+                    </select>
+                    <button type="submit" class="search-button">SEARCH</button>
+                </form>
+            </div>
+            <div class="customer-list">
+                <h3>Customers</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Gender</th>
+                            <th>Address</th>
+                            <th>Action</th>
+                            <th>Measurement</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if customers %}
+                            {% for customer in customers %}
+                                <tr>
+                                    <td>{{ customer.id }}
+                                    <td>{{ customer.name }}</td>
+                                    <td>{{ customer.phone }}</td>
+                                    <td>{{ customer.gender }}</td>
+                                    <td>{{ customer.address}}</td>
+                                    <td>
+                                        <a href="/delete_customer/{{customer.id}}">Delete</a>
+                                        <br/>
+                                        <a href="/edit_customer/{{customer.id}}">Edit</a>
+                                    </td>  
+                                    <td>
+                                        <a href="/view_measurement/{{customer.id}}">View Measurement</a>
+                                    </td>  
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5">No Customers found</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

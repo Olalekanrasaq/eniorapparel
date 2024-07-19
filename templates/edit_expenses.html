@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Enior Apparel</title>
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="icon"></div>
+            <h1>Enior Apparel</h1>
+            <ul>
+                <li><a href="{{ url_for('index') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('create_order') }}"><i class="fas fa-box"></i> Manage Orders</a></li>
+                <li><a href="{{ url_for('delivered_order') }}"><i class="fas fa-box"></i> Delivered Orders</a></li>
+                <li><a href="{{ url_for('ready_order') }}"><i class="fas fa-box"></i> Ready-made</a></li>
+                <li><a href="{{ url_for('items') }}"><i class="fas fa-warehouse"></i> Items & Inventory</a></li>
+                <li><a href="{{ url_for('view_customer') }}"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="{{ url_for('view_expenses') }}"><i class="fas fa-receipt"></i> Expenses</a></li>
+                <li><a href="{{ url_for('reports') }}"><i class="fas fa-chart-line"></i> Reports</a></li>
+
+            </ul>
+        </nav>
+        <div class="main-content">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Edit Expenses</h2>
+                    <button class="close-button">&times;</button>
+                </div>
+                <form method="POST">
+                    <label for="order_id">Order ID:</label>
+                    <input type="text" id="order_id" name="order_id" value="{{ exp.order_id }}"><br><br>
+                    <label for="expense">Expenses:</label>
+                    <input type="text" id="expense" name="expense" value="{{ exp.expense }}"><br><br>
+                    <label for="quantity">Quantity:</label>
+                    <input type="text" id="quantity" name="quantity" value="{{ exp.quantity }}"><br><br>
+                    <label for="price">Price (NGN):</label>
+                    <input type="text" id="price" name="price" value="{{ exp.price }}"><br><br>
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.querySelector('.close-button').addEventListener('click', function() {
+            window.history.back();
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Enior Apparel</title>
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="icon"></div>
+            <h1>Enior Apparel</h1>
+            <ul>
+                <li><a href="{{ url_for('index') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('create_order') }}"><i class="fas fa-box"></i> Manage Orders</a></li>
+                <li><a href="{{ url_for('delivered_order') }}"><i class="fas fa-box"></i> Delivered Orders</a></li>
+                <li><a href="{{ url_for('ready_order') }}"><i class="fas fa-box"></i> Ready-made</a></li>
+                <li><a href="{{ url_for('items') }}"><i class="fas fa-warehouse"></i> Items & Inventory</a></li>
+                <li><a href="{{ url_for('view_customer') }}"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="{{ url_for('view_expenses') }}"><i class="fas fa-receipt"></i> Expenses</a></li>
+                <li><a href="{{ url_for('reports') }}"><i class="fas fa-chart-line"></i> Reports</a></li>
+            </ul>
+        </nav>
+        <div class="main-content">
+            <div class="dashboard-header">
+                <h2>Business Dashboard</h2>
+                <div class="index-date-filters">
+                    <form method="post" action="{{ url_for('index') }}">
+                        <div>
+                            <label for="start_date">Start Date:</label>
+                            <input type="date" id="start_date" name="start_date" required>
+                            <label for="end_date">End Date:</label>
+                            <input type="date" id="end_date" name="end_date" required>
+                            <button type="submit">Update</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="log-out">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('logout') }}" class="logout-tab"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="icon">🛒</div>
+                    <div class="details">
+                        <h3>Pending Orders MTD</h3>
+                        <p>{{ pending_orders }}</p>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="icon">🛒</div>
+                    <div class="details">
+                        <h3>Delivered Orders MTD</h3>
+                        <p>{{ delivered_orders }}</p>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="icon">💰</div>
+                    <div class="details">
+                        <h3>Gross Revenue MTD</h3>
+                        {% if revenue %}
+                            <p>₦ {{ revenue }}</p>
+                        {% else %}
+                            <p>₦ ******** </p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="icon">💰</div>
+                    <div class="details">
+                        <h3>Balance Out MTD</h3>
+                        <p>₦ {{ balance }}</p>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="icon">💰</div>
+                    <div class="details">
+                        <h3>Expenses MTD</h3>
+                        <p>₦ {{ expenses }}</p>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="icon">💰</div>
+                    <div class="details">
+                        <h3>Net Revenue MTD</h3>
+                        {% if net_revenue %}
+                            <p>₦ {{ net_revenue }}</p>
+                        {% else %}
+                            <p>₦ ******* </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="icon">🛒</div>
+                    <div class="details">
+                        <h3>Total Orders MTD</h3>
+                        <p>{{ tot_order }}</p>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="icon">🛒</div>
+                    <div class="details">
+                        <h3>MTD Orders Growth</h3>
+                        <p>{{ tot_ord_mtd }} %</p>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="icon">🛒</div>
+                    <div class="details">
+                        <h3>MTD Delivery Growth</h3>
+                        <p>{{ del_mtd }} %</p>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="icon">💰</div>
+                    <div class="details">
+                        <h3>MTD Net Revenue Growth</h3>
+                        <p> {{ net_rev_mtd }} %</p>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="icon">💰</div>
+                    <div class="details">
+                        <h3>Incurred Expenses</h3>
+                        <p>₦ {{ inc_value }}</p>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="icon">💰</div>
+                    <div class="details">
+                        <h3>Amount Realized</h3>
+                        <p>₦ {{ inc_gain }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="orders-section">
+                <div class="orders-due">
+                    <h3>Orders Due This Week</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer Name</th>
+                                <th>Item</th>
+                                <th>Delivery Date</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if orders_due %}
+                                {% for order in orders_due %}
+                                <tr id="order-{{ order.id }}">
+                                    <td>{{ order.id }}
+                                    <td>{{ order.customer_name }}</td>
+                                    <td>{{ order.item_name }}</td>
+                                    <td>{{ order.expected_at }}</td>
+                                    <td>{{ order.to_balance }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6">No Order found</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="recent-orders">
+                    <h3>Recent Orders</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer Name</th>
+                                <th>Item</th>
+                                <th>Order Date</th>
+                                <th>Delivery Date</th>
+                                <th>Amount Paid</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if rec_orders %}
+                                {% for r_order in rec_orders %}
+                                    <tr>
+                                        <td>{{ r_order.id }}
+                                        <td>{{ r_order.customer_name }}</td>
+                                        <td>{{ r_order.item_name }}</td>
+                                        <td>{{ r_order.created_at }}</td>
+                                        <td>{{ r_order.expected_at }}</td>
+                                        <td>{{ r_order.amount_paid }}</td>
+                                        <td>{{ r_order.to_balance }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="7">No Order found</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDashboard();
+        });
+    </script>
+</body>
+</html>

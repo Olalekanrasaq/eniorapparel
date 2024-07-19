@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Enior Apparel</title>
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="icon"></div>
+            <h1>Enior Apparel</h1>
+            <ul>
+                <li><a href="{{ url_for('index') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('create_order') }}"><i class="fas fa-box"></i> Manage Orders</a></li>
+                <li><a href="{{ url_for('delivered_order') }}"><i class="fas fa-box"></i> Delivered Orders</a></li>
+                <li><a href="{{ url_for('ready_order') }}"><i class="fas fa-box"></i> Ready-made</a></li>
+                <li><a href="{{ url_for('items') }}"><i class="fas fa-warehouse"></i> Items & Inventory</a></li>
+                <li><a href="{{ url_for('view_customer') }}"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="{{ url_for('view_expenses') }}"><i class="fas fa-receipt"></i> Expenses</a></li>
+                <li><a href="{{ url_for('reports') }}"><i class="fas fa-chart-line"></i> Reports</a></li>
+
+            </ul>
+        </nav>
+        <div class="main-content">
+            <div class="order-header">
+                <h2></h2>
+                <form method="post" action="{{ url_for('ready_order') }}">
+                    <a href="{{ url_for('add_ready') }}" class="create-new-order">Add Record</a>
+                    <input type="text" name="search_query" placeholder="Enter search term" class="search-input" id="searchInput">
+                    <input type="date" name="start_date" placeholder="Start date" class="date-input" id="startDate">
+                    <input type="date" name="end_date" placeholder="End date" class="date-input" id="endDate">
+                    <select name="search_type" class="search-select", id="searchType">
+                        <option value="item">Search by Items</option>
+                        <option value="date">Search By Date</option>
+                    </select>
+                    <button type="submit" class="search-button">SEARCH</button>
+                </form>
+            </div>
+            <div class="order-list">
+                <h3>Incurred Expenses</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Incurred Item</th>
+                            <th>Incurred Date</th>
+                            <th>Price</th>
+                            <th>Volume</th>
+                            <th>Amount Realized</th>
+                            <th>Volume Sold</th>
+                            <th>Date last sold</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if inc_expenses %}
+                            {% for exp in inc_expenses %}
+                                <tr>
+                                    <td>{{ exp.id }}
+                                    <td>{{ exp.inc_item }}</td>
+                                    <td>{{ exp.inc_date }}</td>
+                                    <td>{{ exp.inc_price }}</td>
+                                    <td>{{ exp.inc_vol }}</td>
+                                    <td>{{ exp.amount_made }}</td>
+                                    <td>{{ exp.vol_sold }}</td>
+                                    <td>{{ exp.date_sold }}</td>
+                                    <td>
+                                        <a href="/delete_inc_expenses/{{exp.id}}">Delete</a>
+                                        <br/>
+                                        <a href="/edit_inc_expenses/{{exp.id}}">Edit</a>
+                                    </td>  
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="9">No Incurred Expenses</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('searchType').addEventListener('change', function() {
+            var searchInput = document.getElementById('searchInput');
+            var startDate = document.getElementById('startDate');
+            var endDate = document.getElementById('endDate');
+
+            if (this.value === 'date') {
+                searchInput.style.display = 'none';
+                startDate.style.display = 'inline';
+                endDate.style.display = 'inline';
+            } else {
+                searchInput.style.display = 'inline';
+                startDate.style.display = 'none';
+                endDate.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

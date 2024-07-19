@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Enior Apparel</title>
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="icon"></div>
+            <h1>Enior Apparel</h1>
+            <ul>
+                <li><a href="{{ url_for('index') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('create_order') }}"><i class="fas fa-box"></i> Manage Orders</a></li>
+                <li><a href="{{ url_for('delivered_order') }}"><i class="fas fa-box"></i> Delivered Orders</a></li>
+                <li><a href="{{ url_for('ready_order') }}"><i class="fas fa-box"></i> Ready-made</a></li>
+                <li><a href="{{ url_for('items') }}"><i class="fas fa-warehouse"></i> Items & Inventory</a></li>
+                <li><a href="{{ url_for('view_customer') }}"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="{{ url_for('view_expenses') }}"><i class="fas fa-receipt"></i> Expenses</a></li>
+                <li><a href="{{ url_for('reports') }}"><i class="fas fa-chart-line"></i> Reports</a></li>
+
+            </ul>
+        </nav>
+        <div class="main-content">
+            <div class="form-container">
+                <div class="form-header">
+                    <button class="close-button">&times;</button>
+                </div>
+                <form method="POST" class="measurement-form">
+                    <div class="form-group">
+                        <label for="bust">Bust</label>
+                        <input type="text" name="bust" class="form-control" placeholder="Bust">
+                    </div>
+                    <div class="form-group">
+                        <label for="chest">Chest</label>
+                        <input type="text" name="chest" class="form-control" placeholder="Chest">
+                    </div>
+                    <div class="form-group">
+                        <label for="waist">Waist</label>
+                        <input type="text" name="waist" class="form-control" placeholder="Waist">
+                    </div>
+                    <div class="form-group">
+                        <label for="hips">Hips</label>
+                        <input type="text" name="hips" class="form-control" placeholder="Hips">
+                    </div>
+                    <div class="form-group">
+                        <label for="thigh">Thigh</label>
+                        <input type="text" name="thigh" class="form-control" placeholder="Thigh">
+                    </div>
+                    <div class="form-group">
+                        <label for="neck">Neck</label>
+                        <input type="text" name="neck" class="form-control" placeholder="Neck">
+                    </div>
+                    <div class="form-group">
+                        <label for="sleeve">Sleeve</label>
+                        <input type="text" name="sleeve" class="form-control" placeholder="Sleeve">
+                    </div>
+                    <div class="form-group">
+                        <label for="inseam">Inseam</label>
+                        <input type="text" name="inseam" class="form-control" placeholder="Inseam">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="form-button">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.querySelector('.close-button').addEventListener('click', function() {
+            window.history.back();
+        });
+    </script>
+</body>
+</html>

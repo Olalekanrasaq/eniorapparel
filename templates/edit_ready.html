@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Enior Apparel</title>
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="icon"></div>
+            <h1>Enior Apparel</h1>
+            <ul>
+                <li><a href="{{ url_for('index') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('create_order') }}"><i class="fas fa-box"></i> Manage Orders</a></li>
+                <li><a href="{{ url_for('delivered_order') }}"><i class="fas fa-box"></i> Delivered Orders</a></li>
+                <li><a href="{{ url_for('ready_order') }}"><i class="fas fa-box"></i> Ready-made</a></li>
+                <li><a href="{{ url_for('items') }}"><i class="fas fa-warehouse"></i> Items & Inventory</a></li>
+                <li><a href="{{ url_for('view_customer') }}"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="{{ url_for('view_expenses') }}"><i class="fas fa-receipt"></i> Expenses</a></li>
+                <li><a href="{{ url_for('reports') }}"><i class="fas fa-chart-line"></i> Reports</a></li>
+
+            </ul>
+        </nav>
+        <div class="main-content">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Edit Record</h2>
+                    <button class="close-button">&times;</button>
+                </div>
+                <form method="POST">
+                    <label for="inc_item">Incurred Item:</label>
+                    <input type="text" id="inc_item" name="inc_item" value="{{ exp.inc_item }}"><br><br>
+                    <label for="inc_price">Incurred Price:</label>
+                    <input type="text" id="inc_price" name="inc_price" value="{{ exp.inc_price }}"><br><br>
+                    <label for="inc_vol">Volume:</label>
+                    <input type="text" id="inc_vol" name="inc_vol" value="{{ exp.inc_vol }}"><br><br>
+                    <label for="amount_made">Amount Made (NGN):</label>
+                    <input type="text" id="amount_made" name="amount_made" value="{{ exp.amount_made }}"><br><br>
+                    <label for="vol_sold">Volume Sold:</label>
+                    <input type="text" id="vol_sold" name="vol_sold" value="{{ exp.vol_sold }}"><br><br>
+                    <label for="date_sold">Date Last Sold:</label>
+                    <input type="date" id="date_sold" name="date_sold" value="{{ exp.date_sold }}"><br><br>
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.querySelector('.close-button').addEventListener('click', function() {
+            window.history.back();
+        });
+    </script>
+</body>
+</html>
+

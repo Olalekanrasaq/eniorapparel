@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Enior Apparel</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="icon"></div>
+            <h1>Enior Apparel</h1>
+            <ul>
+                <li><a href="{{ url_for('index') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('create_order') }}"><i class="fas fa-box"></i> Manage Orders</a></li>
+                <li><a href="{{ url_for('delivered_order') }}"><i class="fas fa-box"></i> Delivered Orders</a></li>
+                <li><a href="{{ url_for('ready_order') }}"><i class="fas fa-box"></i> Ready-made</a></li>
+                <li><a href="{{ url_for('items') }}"><i class="fas fa-warehouse"></i> Items & Inventory</a></li>
+                <li><a href="{{ url_for('view_customer') }}"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="{{ url_for('view_expenses') }}"><i class="fas fa-receipt"></i> Expenses</a></li>
+                <li><a href="{{ url_for('reports') }}"><i class="fas fa-chart-line"></i> Reports</a></li>
+            </ul>
+        </nav>
+        <div class="main-content">
+            <div class="date-filters">
+                <div>
+                    <label for="start_date">Start Date:</label>
+                    <input type="date" id="start_date">
+                    <label for="end_date">End Date:</label>
+                    <input type="date" id="end_date">
+                </div>
+                <button onclick="updateCharts()">Update</button>
+            </div>
+
+            <div class="charts">
+                <div class="chart-container-line" id="line-chart-container">
+                    <canvas id="ordersChart"></canvas>
+                </div>
+                <div class="chart-container-bar" id="bar-chart-container">
+                    <canvas id="itemsChart"></canvas>
+                </div>
+                <div class="chart-container-pie" id="pie-chart-container">
+                    <canvas id="expensesChart"></canvas>
+                </div>
+                <div class="top-customers" id="top-customers-container">
+                    <h3>Top 5 Customers</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Customer Name</th>
+                                <th>No of Orders</th>
+                            </tr>
+                        </thead>
+                        <tbody id="top-customers-tbody">
+                            <!-- Top customers will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ordersChartCtx = document.getElementById('ordersChart').getContext('2d');
+        const itemsChartCtx = document.getElementById('itemsChart').getContext('2d');
+        const expensesChartCtx = document.getElementById('expensesChart').getContext('2d');
+
+        let ordersChart = new Chart(ordersChartCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Trend in Orders for last 7 days',
+                    data: [],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            display: true
+                        },
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+
+        let itemsChart = new Chart(itemsChartCtx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Top items ordered',
+                    data: [],
+                    backgroundColor: 'rgba(35, 153, 235, 1)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+
+        });
+
+        let expensesChart = new Chart(expensesChartCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Expenses', 'Revenue'],
+                datasets: [{
+                    data: [],
+                    backgroundColor: ['rgba(255, 99, 132, 1)', 'rgba(99, 255, 222, 1)'],
+                    borderColor: ['rgba(255, 99, 132, 1)', 'rgba(99, 255, 222, 1)'],
+                    borderWidth: 1
+                }]
+            }
+        });
+
+        function updateCharts() {
+            const startDate = document.getElementById('start_date').value;
+            const endDate = document.getElementById('end_date').value;
+
+            fetch(`/api/orders?start_date=${startDate}&end_date=${endDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    ordersChart.data.labels = Object.keys(data);
+                    ordersChart.data.datasets[0].data = Object.values(data);
+                    ordersChart.update();
+                });
+
+            fetch(`/api/items`)
+                .then(response => response.json())
+                .then(data => {
+                    itemsChart.data.labels = Object.keys(data);
+                    itemsChart.data.datasets[0].data = Object.values(data);
+                    itemsChart.update();
+                });
+
+            fetch(`/api/expenses_vs_paid?start_date=${startDate}&end_date=${endDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    expensesChart.data.datasets[0].data = [data['Expenses'], data['Amount Paid']];
+                    expensesChart.update();
+                });
+
+            fetch(`/api/top_customers`)
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('top-customers-tbody');
+                    tbody.innerHTML = '';
+                    data.forEach(customer => {
+                        const row = document.createElement('tr');
+                        const nameCell = document.createElement('td');
+                        const orderCountCell = document.createElement('td');
+                        nameCell.textContent = customer.name;
+                        orderCountCell.textContent = customer.order_count;
+                        row.appendChild(nameCell);
+                        row.appendChild(orderCountCell);
+                        tbody.appendChild(row);
+                    });
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCharts();
+        });
+    </script>
+</body>
+</html>
