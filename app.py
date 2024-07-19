@@ -12,7 +12,7 @@ import pandas as pd
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Analyst@10'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tailor.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = "DATABASE_URL"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://u1ifbaupkdcsc9:p62ff6a5ca8e2b602fe2e9a7d9ab02c41baae28b5191db0b5a9947c3e9668e136@c1i13pt05ja4ag.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/de4qhno8h1om0q"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
